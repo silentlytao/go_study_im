@@ -1,0 +1,95 @@
+{{define "/user/register.shtml"}}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>注册</title>
+    <link rel="stylesheet" href="/asset/plugins/mui/css/mui.css" />
+    <link rel="stylesheet" href="/asset/css/login.css" />
+    <script src="/asset/plugins/mui/js/mui.js" ></script>
+    <script src="/asset/js/vue.min.js" ></script>
+    <script src="/asset/js/util.js" ></script>
+</head>
+<body>
+
+<header class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">注册</h1>
+</header>
+<div class="mui-content" id="pageapp">
+    <form id='login-form' class="mui-input-group">
+        <div class="mui-input-row">
+            <label>手机</label>
+            <input v-model="user.mobile"  type="text" class="mui-input-clear mui-input" placeholder="请输入手机号">
+        </div>
+
+        <div class="mui-input-row">
+            <label>密码</label>
+            <input v-model="user.password" id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+        </div>
+        <div class="mui-input-row">
+            <label>确认</label>
+            <input v-model="user.password_confirm" id='password_confirm' type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
+        </div>
+        <div class="mui-input-row">
+            <label>昵称</label>
+            <input v-model="user.nick_name"  type="text" class="mui-input-clear mui-input" placeholder="请输入昵称">
+        </div>
+        <div class="mui-input-row">
+            <label>性别</label>
+            <select v-model="user.sex" class="mui-input-clear mui-input">
+                <option value="M">男</option>
+                <option value="W">女</option>
+            </select>
+        </div>
+    </form>
+    <div class="mui-content-padded">
+        <button @click="register" id='reg' class="mui-btn mui-btn-block mui-btn-primary">注册</button>
+    </div>
+    <div class="mui-content-padded oauth-area">
+    </div>
+</div>
+</body>
+</html>
+<script>
+    var app = new Vue({
+        el:"#pageapp",
+        data:{
+            user:{
+                mobile:"",
+                password:"",
+                password_confirm:"",
+                memo:"",
+                avatar:"/asset/images/user.jpg",
+                sex:""
+            },
+
+        },
+        methods:{
+            register:function(){
+                var that = this;
+                if(!(/^1[3|4|5|7|8][0-9]\d{8}$/.test(this.user.mobile))){
+                    mui.toast("手机号格式不对")
+                    return
+                }
+                if(!this.user.password){
+                    mui.toast("请输入密码")
+                    return
+                }
+                if(this.user.password!=this.user.password_confirm){
+                    mui.toast("前后输入不一致")
+                    return
+                }
+                util.post("user/register",this.user).then(res =>{
+                    console.log(res)
+                    if(res.code!=1){
+                        mui.toast(res.msg)
+                    }else{
+                        window.location.href="../user/login.shtml"
+                    }
+
+                })
+            },
+        }
+    })
+</script>
+{{end}}
